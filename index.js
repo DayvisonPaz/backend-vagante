@@ -37,4 +37,4 @@ app.get("/posts",(req,res)=>{
     })
 
 
-app.listen(PORT,console.log("server no ar"))
+app.listen(PORT|3000,console.log("server no ar"))
