@@ -4,7 +4,7 @@ require('dotenv').config()
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri =`mongodb+srv://${process.env.U_DB}:${process.env.P_DB}@cluster0.3v8vfkh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-
+const PORT = process.env.PORT || 3030;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -37,4 +37,4 @@ app.get("/posts",(req,res)=>{
     })
 
 
-app.listen(PORT|3000,console.log("server no ar"))
+app.listen(PORT,console.log("server no ar"))
