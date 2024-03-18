@@ -1,7 +1,8 @@
 express  = require("express")
 const app = express()
 require('dotenv').config()
-
+cors = require("cors")
+app.use(cors())
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri =`mongodb+srv://${process.env.U_DB}:${process.env.P_DB}@cluster0.3v8vfkh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const PORT = process.env.PORT || 3030;
@@ -22,11 +23,10 @@ async function run() {
       const query = { };
       const movie = await movies.find(query);
       for await (const doc of movie) {
-        
         posts.push(doc);
       }
     } finally {
-        console.log(posts);
+        
       // Ensures that the client will close when you finish/error
       await client.close();
     }
@@ -37,4 +37,4 @@ app.get("/posts",(req,res)=>{
     })
 
 
-app.listen(PORT,console.log("server no ar"))
+app.listen(PORT,console.log('noa ar'))
