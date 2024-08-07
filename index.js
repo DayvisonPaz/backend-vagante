@@ -60,7 +60,7 @@ app.post("/addcomment",(req,res)=>{
         },
       })
    } catch (e) {
-      print (e);
+      print (e); 
    }
     movies.insertOne({comments:req.body})
       res.status(200)}
