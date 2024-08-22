@@ -16,18 +16,24 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
-let posts = []
+let postsVagante = []
+let postsTechno = []
 const database = client.db('Blog');
-const movies = database.collection('posts');
+const techPosts = database.collection('postTechno');
+const vagantePosts = database.collection('postVagante');
 
 async function run() {
     try {
       
-      // Query for a movie that has the title 'Back to the Future'
+      // Query for a vagante that has the title 'Back to the Future'
       const query = { };
-      const movie = await movies.find(query);
-      for await (const doc of movie) {
-        posts.push(doc);
+      const vagante = await vagantePosts.find(query);
+      const techno = await techPosts.find(query);
+      for await (const doc of techno) { 
+        postsTechno.push(doc);
+      }
+      for await (const doc of vagante) {
+        postsVagante.push(doc);
       }
     } finally {
         
@@ -36,36 +42,63 @@ async function run() {
     }
   }
 run().catch(console.dir);
-app.get("/posts",(req,res)=>{
-    res.status(200).json({posts})
+app.get("/posts/:channel",(req,res)=>{
+    if( req.params.channel === 'techno') {
+      res.status(200).json({postsTechno})
+    }if(req.params.channel === 'vagante'  )  {
+      res.status(200).json({postsVagante})
+    }
     })
-app.get("/comments/:post",(req,res)=>{
+app.get("/comments/:channel/:post",(req,res)=>{
  async function runC(){
   let cont = Number(req.params.post)
-  
-  const movie = await movies.findOne({ post:cont});
-  comments = movie.comments
-    res.status(200).json({comments})}
+  if(req.params.channel === 'techno') {
+    const techno = await techPosts.findOne({ post:cont});
+  comments = techno.comments
+    res.status(200).json({comments})}if(channel === 'vagante'  ) {
+  const vagante = await vagantePosts.findOne({ post:cont});
+  comments = vagante.comments
+    res.status(200).json({comments})}}
 runC()}) 
-app.post("/addcomment",(req,res)=>{
+app.post("/addcomment/:channel",(req,res)=>{
   async function runC(){
+      if(req.params.channel === 'vagante') { 
+        const vagante = await vagantePosts.findOne({ post:req.body.post});
+      let comentarios = [...vagante.comments , {'nome':req.body.nome,'comentario': req.body.comentario}]
       
-  const movie = await movies.findOne({ post:req.body.post});
-  let comentarios = [...movie.comments , {'nome':req.body.nome,'comentario': req.body.comentario}]
-  
-    try {
-      movies.updateOne({post:Number(req.body.post)}, {
-        $set: {
-          comments: comentarios
-        },
-      })
-   } catch (e) {
-      print (e); 
-   }
-    movies.insertOne({comments:req.body})
-      res.status(200)}
-  runC()
-
-  res.status(200).json({})
-})
-app.listen(PORT,console.log('noa ar'))
+        try {
+          vagantePosts.updateOne({post:Number(req.body.post)}, {
+            $set: {
+              comments: comentarios
+            },
+          })
+       } catch (e) {
+          print (e); 
+       }
+        vagantePosts.insertOne({comments:req.body})
+          res.status(200)}
+          else{
+            const techno = await techPosts.findOne({ post:req.body.post});
+            let comentarios = [...techno.comments , {'nome':req.body.nome,'comentario': req.body.comentario}]
+            
+              try {
+                techPosts.updateOne({post:Number(req.body.post)}, {
+                  $set: {
+                    comments: comentarios
+                  },
+                })
+             } catch (e) {
+                print (e); 
+             }
+              techPosts.insertOne({comments:req.body})
+                res.status(200)}
+            runC()
+          
+            res.status(200).json({})
+          }
+      runC()
+    
+      res.status(200).json({})}
+ 
+)
+app.listen(PORT,console.log('no ar'))
