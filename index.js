@@ -43,6 +43,7 @@ async function run() {
   }
 run().catch(console.dir);
 app.get("/posts/:channel",(req,res)=>{
+  console.log(postsTechno,postsVagante);
     if( req.params.channel === 'techno') {
       res.status(200).json({postsTechno})
     }if(req.params.channel === 'vagante'  )  {
