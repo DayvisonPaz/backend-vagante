@@ -7,6 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri =`mongodb+srv://${process.env.UDB}:${process.env.PDB}@cluster0.3v8vfkh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+console.log(process.env.UDB, process.env.PDB)
 const PORT = process.env.PORT || 3030;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
